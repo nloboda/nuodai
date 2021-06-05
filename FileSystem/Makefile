@@ -18,4 +18,5 @@ test: make
 	./Tests
 
 clean:
-	rm -Rf *.o
+	find . -name \*.o -exec rm {} \;
+	rm -f Tests

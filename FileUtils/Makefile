@@ -42,4 +42,5 @@ test: make
 
 clean:
 	find . -name \*.o -exec rm {} \;
+	rm -f Tests
 

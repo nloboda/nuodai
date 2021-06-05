@@ -10,10 +10,7 @@ Config.o:
 ConfigManager.o:
 	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/ConfigManager.cpp -I./h
 
-Configuration.o:
-	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/Configuration.cpp -I../YdClient/h -I../FileUtils/h -I./h
-
-make: Config.o ConfigManager.o Configuration.o
+make: Config.o ConfigManager.o
 
 test: make
 	$(CXX) $(CFLAGS)  *.o tests/Suite.cpp -I./tests/ -I./h -I../FileUtils/h -I./h -I../YdClient/h  -o Tests $(PROD_DEPS) $(TEST_DEPS)
@@ -21,4 +18,5 @@ test: make
 
 clean:
 	find . -name \*.o -exec rm {} \;
+	rm -f Tests
 
