@@ -65,7 +65,8 @@ BlockState BlockMapper::find_mapping(const unsigned long inode_id,
 	*hash = block;
 	*iv = block + BLOCK_MAPPER_HASH_SIZE;
 
-	BlockState state = static_cast<BlockState>((allocation_data + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE)[0]);
+	char bs = (allocation_data + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE)[0];
+	BlockState state = static_cast<BlockState>(bs);
 	return state;
 }
 
@@ -87,22 +88,34 @@ bool BlockMapper::update_mapping(const unsigned long inode_id,
 	unsigned char* block = reinterpret_cast<unsigned char*>(this->map.at(block_number) + offset_in_block);
 	std::memcpy(block, hash, BLOCK_MAPPER_HASH_SIZE);
 	std::memcpy(block + BLOCK_MAPPER_HASH_SIZE , iv, BLOCK_MAPPER_IV_SIZE);
-	reinterpret_cast<char*>(block + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE)[0] = static_cast<char>(BlockState::ALLOCATED);
+	char c = static_cast<char>(BlockState::ALLOCATED);
+	std::memcpy(block + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE, reinterpret_cast<unsigned char*>(&c), 1);
 	return true;
 }
 
-/**
- * Adds an empty block
- * @param block blocks data
- */
-void BlockMapper::append_block(char* block)
+inline static void mark_all_chunks_as_free(char* block)
 {
 	for(unsigned long i = 0; i < Blocks::REFERENCES_IN_BLOCK; i++) {
 		unsigned int offset = find_chunk_in_block(i);
 		char* state_pointer = block + offset + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE;
 		state_pointer[0] = static_cast<char>(BlockState::FREE);
 	}
+}
+/**
+ * Adds an empty block
+ * @param block blocks data
+ */
+void BlockMapper::append_block(char* block)
+{
 	this->map.push_back(block);
+}
+
+char* BlockMapper::make_new_fat()
+{
+	char* block = new char[FsConstants::BLOCK_SIZE];
+	mark_all_chunks_as_free(block);
+	this->map.push_back(block);
+	return block;
 }
 
 char* BlockMapper::get_fat_data()

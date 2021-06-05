@@ -129,11 +129,11 @@ void FuseOperationsSupport::readdir(fuse_req_t req, fuse_ino_t ino, size_t size,
 		memset(&b, 0, sizeof(b));
 		dirbuf_add(req, &b, ".", 1);
 		dirbuf_add(req, &b, "..", 1);
-		for(unsigned int i = 0; i < dir->count_children(); i++)
+		/*for(unsigned int i = 0; i < dir->count_children(); i++)
 		{
 			Dirchild dc = dir->get_child(i);
 			dirbuf_add(req, &b, dc.name, dc.inode);
-		}
+		}*/
 		reply_buf_limited(req, b.p, b.size, off, size);
 		free(b.p);
 	}

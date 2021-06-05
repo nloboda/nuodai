@@ -32,6 +32,7 @@ public:
 	BlockState find_mapping(const unsigned long id, unsigned char** hash, unsigned char** iv);
 	bool update_mapping(const unsigned long id, const unsigned char* hash, const unsigned char* iv);
 	void append_block(char* block);
+	char* make_new_fat();
 	char* get_fat_data();
 private:
 	std::vector<char*> map;

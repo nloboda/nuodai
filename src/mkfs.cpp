@@ -12,12 +12,11 @@
 static int make(int argc, char** argv)
 {
 	std::unique_ptr<Config> config = config_manager::make();
-
 	BlockMapper*  bm  = new BlockMapper();
 	PlainFs* pfs = new PlainFs(config->get_working_dir());
 	CryptoLayer* cl = new CryptoLayer(pfs, reinterpret_cast<const unsigned char*>(config->get_key()));
 	InodeManager* im = new InodeManager(bm, cl, config->get_iv());
-	std::unique_ptr<char> special_block =  im->new_fat();
+	im->new_fat();
 	im->save();
 	im->suballocate(0, 1); //TODO: fixme this is dirty hack to make root dir have inode=1
 	Directory root_dir;
@@ -40,13 +39,10 @@ static int sanity_check(int argc, char** argv)
 	BlockMapper*  bm  = new BlockMapper();
 	PlainFs* pfs = new PlainFs(config->get_working_dir());
 	CryptoLayer* cl = new CryptoLayer(pfs, reinterpret_cast<const unsigned char*>(config->get_key()));
-	InodeManager* im = new InodeManager(bm, cl, config   ->get_iv());
+	InodeManager* im = new InodeManager(bm, cl, config->get_iv());
 	im->load(config->get_special_block());
-	std::cout<< "1" << std::endl;
 	std::unique_ptr<Directory> d1 =  directory::read_directory(reinterpret_cast<unsigned char*>(im->read(0)));
-	std::cout<< "2" << std::endl;
 	std::unique_ptr<Directory> d2 =  directory::read_directory(reinterpret_cast<unsigned char*>(im->read(1)));
-	std::cout<< "3" << std::endl;
 	std::cout << d2->get_child(0).name << std::endl;
 }
 

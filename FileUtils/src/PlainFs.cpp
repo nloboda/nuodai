@@ -104,6 +104,7 @@ bool PlainFs::verify_hash(const unsigned char* block, const char* buffer)
  */
 void PlainFs::read_plain(const char* block, char* buffer)
 {
+	if(plainfs_guts::working_directory_lenth == 0) throw std::runtime_error("working_directory_lenth is zero");
 	char* filename_buffer = plainfs_guts::filename_buffer + plainfs_guts::working_directory_lenth;
 	FileUtils::hash_to_name(reinterpret_cast<const unsigned char*>(block), reinterpret_cast<unsigned char *>(filename_buffer));
 

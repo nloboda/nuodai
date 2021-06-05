@@ -20,6 +20,20 @@
 #define ENCRYPT_FAIL throw std::runtime_error("Encryption failed")
 
 
+
+static const unsigned char* LETTERS = (const unsigned char *)"0123456789abcdef";
+
+static unsigned char left_char_to_hash(const unsigned char b){
+	return LETTERS[(unsigned char)(b >> 4)];
+}
+
+static unsigned char right_char_to_hash(const unsigned char b)
+{
+	return LETTERS[(unsigned char)(b & 0xf)];
+}
+
+
+
 inline static void derive_key(std::string password, unsigned char* key, unsigned char* iv)
 {
 	const char* data = password.c_str();

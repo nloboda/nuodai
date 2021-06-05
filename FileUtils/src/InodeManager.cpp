@@ -48,10 +48,8 @@ InodeManager::InodeManager(BlockMapper* block_mapper, CryptoLayer* crypto_layer,
 BlockState inline InodeManager::load(const unsigned long inode)
 {
 	if(inode_loaded(inode)) {
-		std::cout << "Inode :" << inode << " is already loaded" << std::endl;
 		return BlockState::ALLOCATED;//we're working on this block, it must be allocated
 	}
-	std::cout << "Loading inode :" << inode << std::endl;
 
 	unsigned char* hash;
 	unsigned char* iv;
@@ -91,6 +89,11 @@ void InodeManager::flush(const unsigned long inode)
 
 	delete hash;
 	delete iv;
+}
+
+void InodeManager::reset()
+{
+	inode_manager::current_inode = ULONG_MAX;
 }
 
 unsigned long InodeManager::suballocate(unsigned long int inode, unsigned int size)
@@ -176,13 +179,9 @@ std::unique_ptr<char> InodeManager::make_block(const char* iv)
 	return std::move(block);
 }
 
-std::unique_ptr<char> InodeManager::new_fat()
+void InodeManager::new_fat()
 {
-	std::unique_ptr<char> special_node_hash =  this->make_block(this->special_block_iv.get());
-	char* block = new char[FsConstants::BLOCK_SIZE];
-	this->crypto_layer->read_decrypted(special_node_hash.get(), block, this->special_block_iv.get());
-	this->block_mapper->append_block(block);
-	return std::unique_ptr<char>(block);
+	this->block_mapper->make_new_fat();
 }
 
 InodeManager::~InodeManager()

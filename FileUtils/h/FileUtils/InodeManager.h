@@ -32,7 +32,7 @@ public:
 
 	std::unique_ptr<char> save();
 
-	std::unique_ptr<char> new_fat();
+	void new_fat();
 	void reset();
 
 private:
