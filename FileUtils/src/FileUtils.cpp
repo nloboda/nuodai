@@ -28,18 +28,18 @@ void FileUtils::hash_to_name(const unsigned char* hash, unsigned char* filename)
 {
 	for(int i=0; i < 32; i++)
 	{
-		filename[i*2] = left_char_to_hash(hash[i]);
-		filename[i*2 + 1] = right_char_to_hash(hash[i]);
+		filename[i * 2] = left_char_to_hash(hash[i]);
+		filename[i * 2 + 1] = right_char_to_hash(hash[i]);
 	}
 }
 
 void FileUtils::name_to_hash(const unsigned char* filename, unsigned char* hash)
 {
 	
-	for(int i=0;i<32;i++)
+	for(int i = 0; i < 32; i++)
 	{
-		const unsigned char left = map_byte_to_char((const unsigned char)(filename[i*2]));
-		const unsigned char right = map_byte_to_char((const unsigned char)(filename[i*2 + 1]));
+		const unsigned char left = map_byte_to_char((const unsigned char)(filename[i * 2]));
+		const unsigned char right = map_byte_to_char((const unsigned char)(filename[i * 2 + 1]));
 		hash[i] = (left << 4) | (right & 0xf);
 	}
 }

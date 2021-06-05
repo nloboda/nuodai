@@ -80,8 +80,8 @@ char* Config::get_data()
 bool Config::validate()
 {
 	char* magic_number = data + config::magic_number_offset;
-	for(int i=0;i<16;i++)
-		if(magic_number[i]!=config::magic_number[i]) return false;
+	for(int i=0; i < 16; i++)
+		if(magic_number[i] != config::magic_number[i]) return false;
 	return true;
 }
 
