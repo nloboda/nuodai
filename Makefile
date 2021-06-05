@@ -67,6 +67,8 @@ clean:
 	rm -f a.out
 	rm -Rf docs
 	rm -Rf *.o
+	rm -f mount
+	rm -f mkfs
 
 test:
 	$(MAKE) -C YdClient test
