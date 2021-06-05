@@ -10,5 +10,8 @@ Directory.o:
 make:  Directory.o
 	echo "done"
 
+test: make
+	echo "nothing to do"
+
 clean:
 	rm -Rf *.o

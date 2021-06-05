@@ -16,6 +16,10 @@ Auth.o:
 make: Auth.o YandexAuthenticator.o YandexDiskClient.o
 	#$(CXX) $(PROD_DEPS) YandexAuthenticator.o -o a.out
 	echo "done"
+
+test: make
+	echo "Nothing to do"
+
 clean:
 	rm -Rf out/*
 

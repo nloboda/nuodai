@@ -10,6 +10,9 @@ FuseAdapter.o:
 
 make: FuseAdapter.o
 	echo "done"
+
+test: make
+	echo "make test"
 clean:
 	rm -Rf out/*
 	rm -f *.o

@@ -30,7 +30,10 @@ BlockSemaphore.o:
 Allocation.o:
 	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/Allocation.cpp -I./h
 
-make: FileUtils.o PlainFs.o CryptoLayer.o FsBlock.o CryptoBlockData.o BlockMapper.o BlockSemaphore.o Allocation.o
+InodeManager.o:
+	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/InodeManager.cpp -I./h
+
+make: FileUtils.o PlainFs.o CryptoLayer.o FsBlock.o CryptoBlockData.o BlockMapper.o BlockSemaphore.o Allocation.o InodeManager.o
 	echo "done"
 	
 test: make
