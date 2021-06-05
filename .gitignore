@@ -9,4 +9,4 @@ nuodai.layout
 .cproject
 .project
 .settings/
-
+*.o
