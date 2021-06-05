@@ -21,5 +21,5 @@ test: make
 	echo "Nothing to do"
 
 clean:
-	rm -Rf out/*
+	find . -name \*.o -exec rm {} \;
 
