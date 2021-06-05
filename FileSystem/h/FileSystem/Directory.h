@@ -29,8 +29,6 @@ public:
 	Directory(const char* data);
 	virtual ~Directory();
 	const unsigned char count_children();
-	const char* const child_at(unsigned char position);
-
 	const char* get_name(unsigned char i);
 	const EntityType get_type(unsigned char i);
 	const unsigned long inode_id(unsigned char i);
@@ -39,6 +37,7 @@ private:
 	const char* data;
 	//size is name(256 bytes) + entity type (byte) + inode_id (64 bits aka 8 bytes)
 	static unsigned const int STRUCTURE_SIZE = 265;
+	const char* const child_at(unsigned char position);
 };
 
 

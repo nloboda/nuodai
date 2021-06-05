@@ -38,7 +38,6 @@ void BlockSemaphore::set_bit(long chunk_id, bool bit)
 		bit_offset = bit_offset >> 8;
 		bucket_id++;
 	}
-	unsigned long bucket = this->bits[bucket_id];
 	unsigned long val = bit;
 	if(bit)
 	{
