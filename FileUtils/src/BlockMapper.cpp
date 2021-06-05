@@ -6,8 +6,6 @@
 #include <cstring>
 #include "Utils.h"
 /*
- * I feel like i need to leave this comment here.
- *
  * There are chunks: physical files on your local filesystem.
  * there are also Inodes. they're chunks of data. Could be of
  * several types: dir, file or just chunk of data (file is a list of such chunks)
