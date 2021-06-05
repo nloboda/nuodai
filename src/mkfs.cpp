@@ -17,12 +17,9 @@ static void show_help() {
 	<< "for example: mkfs config.bin " << std::endl;
 }
 
-static int check_args(int argc, char** argv) {
-
-}
 static int make(int argc, char** argv)
 {
-	if(argc!=1)
+	if(argc != 2)
 	{
 		show_help();
 		return 1;

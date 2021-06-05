@@ -3,8 +3,8 @@
 #include <YdClient/YandexAuthenticator.h>
 #include <curl/curl.h>
 #include <string.h>
-#include <jsoncpp/json/value.h>
-#include <jsoncpp/json/json.h>
+#include <json/value.h>
+#include <json/json.h>
 #include <ctime>
 #include <stdexcept>
 
