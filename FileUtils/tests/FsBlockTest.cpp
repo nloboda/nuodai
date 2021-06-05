@@ -19,12 +19,14 @@ private:
 	void FsBlock_shouldContainOneChunk_ifInserted();
 	void FsBlock_shouldReadSameDataFromChunk_afterDataIsWritten();
 	void FsBlock_shouldContainNPlusOneChunks_ifInserted();
-	void FsBlock_shouldMoveUpperChunks_ifLoweIsReszed();
-	void FsBlock_shouldEditWholeChunk_afterResize();
+	void FsBlock_shouldMoveUpperChunks_ifLowerChunkSizeIsIncreased();
+	void FsBlock_shouldEditWholeChunk_afterSizeIncrease();
+
+	void FsBlock_shouldMoveUpperChunks_ifLowerChunkSizeIsReduced();
 
 	void fillChunkWithValue(unsigned char chunk_id, char value) {
 		char* data = this->sut->read_chunk(chunk_id);
-		for(int i=0;i< this->sut->chunk_size(chunk_id);i++){
+		for(int i = 0; i < this->sut->chunk_size(chunk_id); i++){
 			data[i] = value;
 		}
 	}
@@ -47,8 +49,9 @@ public:
 		this->FsBlock_shouldContainOneChunk_ifInserted();
 		this->FsBlock_shouldReadSameDataFromChunk_afterDataIsWritten();
 		this->FsBlock_shouldContainNPlusOneChunks_ifInserted();
-		this->FsBlock_shouldMoveUpperChunks_ifLoweIsReszed();
-		this->FsBlock_shouldEditWholeChunk_afterResize();
+		this->FsBlock_shouldMoveUpperChunks_ifLowerChunkSizeIsIncreased();
+		this->FsBlock_shouldEditWholeChunk_afterSizeIncrease();
+		this->FsBlock_shouldMoveUpperChunks_ifLowerChunkSizeIsReduced();
 	}
 };
 
@@ -83,7 +86,7 @@ void FsBlockTest::FsBlock_shouldContainNPlusOneChunks_ifInserted()
 	CPPUNIT_ASSERT(chunks_count == 2);
 }
 
-void FsBlockTest::FsBlock_shouldMoveUpperChunks_ifLoweIsReszed()
+void FsBlockTest::FsBlock_shouldMoveUpperChunks_ifLowerChunkSizeIsIncreased()
 {
 	this->sut->clear();
 	this->sut->insert_chunk(100);
@@ -107,7 +110,7 @@ void FsBlockTest::FsBlock_shouldMoveUpperChunks_ifLoweIsReszed()
 	CPPUNIT_ASSERT( size_diff == 50);
 }
 
-void FsBlockTest::FsBlock_shouldEditWholeChunk_afterResize()
+void FsBlockTest::FsBlock_shouldEditWholeChunk_afterSizeIncrease()
 {
 	this->sut->clear();
 	this->sut->insert_chunk(100);
@@ -134,6 +137,23 @@ void FsBlockTest::FsBlock_shouldReadSameDataFromChunk_afterDataIsWritten()
 	const char* data_to_read = this->sut->read_chunk(0);
 
 	for(int i = 0; i < 100; i++) CPPUNIT_ASSERT(data_to_read[i] == 37);
+}
+
+void FsBlockTest::FsBlock_shouldMoveUpperChunks_ifLowerChunkSizeIsReduced()
+{
+	this->sut->clear();
+	this->sut->insert_chunk(100);
+	this->sut->insert_chunk(100);
+	this->fillChunkWithValue(0, 'a');
+	this->fillChunkWithValue(1, 'b');
+
+	this->sut->resize_chunk(0, 50);
+
+	for(int i = 0;i < 50; i++)
+		CPPUNIT_ASSERT(this->sut->read_chunk(0)[i] == 'a');
+
+	for(int i = 0;i< 100;i++)
+		CPPUNIT_ASSERT(this->sut->read_chunk(1)[i] == 'b');
 }
 
 

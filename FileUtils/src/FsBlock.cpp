@@ -61,7 +61,7 @@ unsigned int FsBlock::get_chunk_offset(unsigned char n) noexcept
 	return i;
 }
 
-void FsBlock::set_chunk_offset(unsigned char n, unsigned int value)
+void FsBlock::set_chunk_offset(unsigned char n, unsigned int value) noexcept
 {
 	unsigned int offset = 1 + sizeof(int) * n;
 	write_int(reinterpret_cast<unsigned char*>(this->data), offset, value);
@@ -133,14 +133,21 @@ char* FsBlock::insert_chunk(unsigned int chunk_size)
 	return this->data + next_chunk_offset;
 };
 
-void FsBlock::resize_chunk(unsigned char n, unsigned int new_size)
+void FsBlock::resize_chunk(unsigned char n, unsigned int new_size) noexcept
 {
 	unsigned int old_size = this->chunk_size(n);
 	int size_diff = new_size - old_size;
 	unsigned int next_chunk_offset = this->get_chunk_offset(n + 1);
 
-	for(int i = plainfs::BLOCK_SIZE -1 ;i >= next_chunk_offset + size_diff; i--)
-		this->data[i] = this->data[i - size_diff];
+	//TODO: we should use memcpy here instead if setting bytes manually
+	if(size_diff > 0)
+	{
+		for(int i = plainfs::BLOCK_SIZE -1 ;i >= next_chunk_offset + size_diff; i--)
+			this->data[i] = this->data[i - size_diff];
+	} else {
+		for(int i = next_chunk_offset + size_diff;i < plainfs::BLOCK_SIZE + size_diff;i++)
+				this->data[i] = this->data[i - size_diff];
+	}
 
 	for(int i = n + 1;i < this->count_chunks(); i++)
 		this->set_chunk_offset(i, this->get_chunk_offset(i) + size_diff);

@@ -37,12 +37,12 @@ class FsBlock
 		void clear();
 		unsigned int chunk_size(unsigned char n) noexcept;
 		unsigned int get_chunk_offset(unsigned char n) noexcept;
-		void resize_chunk(unsigned char n, unsigned int size);
+		void resize_chunk(unsigned char n, unsigned int size) noexcept;
 	private:
 		char* data;
 
 		int get_first_skipped_chunk() noexcept;
-		void set_chunk_offset(unsigned char n, unsigned int value);
+		void set_chunk_offset(unsigned char n, unsigned int value) noexcept;
 };
 
 #endif // FSBLOCK_H_INCLUDED
