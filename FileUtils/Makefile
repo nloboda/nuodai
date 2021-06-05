@@ -16,19 +16,19 @@ CryptoLayer.o:
 	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/CryptoLayer.cpp -I./h
 
 FsBlock.o:
-	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/FsBlock.cpp -I./h
+	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/FsBlock.cpp -I./h -I../h
 	
 CryptoBlockData.o:
 	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/CryptoBlockData.cpp -I./h
 
 BlockMapper.o:
-	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/BlockMapper.cpp -I./h
+	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/BlockMapper.cpp -I./h -I../h
 
 BlockSemaphore.o:
 	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/BlockSemaphore.cpp -I./h
 	
 Allocation.o:
-	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/Allocation.cpp -I./h
+	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/Allocation.cpp -I./h -I../h
 
 InodeManager.o:
 	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/InodeManager.cpp -I./h

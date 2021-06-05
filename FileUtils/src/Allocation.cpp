@@ -1,4 +1,5 @@
 #include "FileUtils/Allocation.h"
+#include "Utils.h"
 #define SUBALLOCATION_HEADER_LENGTH 1
 #define ALLOCATION_OFFSET_SIZE 4
 /**
@@ -19,13 +20,6 @@ Allocation::Allocation(unsigned char *d, unsigned char allocation) :
 }
 Allocation::~Allocation() {
 	delete this->data;
-}
-
-static inline unsigned int read_int(unsigned char *data, unsigned int offset) {
-	return static_cast<unsigned int>(data[offset]) << 24
-			| static_cast<unsigned int>(data[offset + 1]) << 16
-			| static_cast<unsigned int>(data[offset + 2]) << 8
-			| static_cast<unsigned int>(data[offset + 3]);
 }
 
 static inline unsigned int get_allocation_offset(unsigned char *data,

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdint>
 #include <cstring>
+#include "Utils.h"
 /*
  * I feel like i need to leave this comment here.
  *
@@ -33,16 +34,6 @@ BlockMapper::~BlockMapper()
 }
 
 
-/**
- * remove last 8 bits
- */
-static unsigned long get_chunk_id(const unsigned long inode_id) noexcept
-{
-	return inode_id / 256;
-}
-/**
- *
- */
 static unsigned long find_chunk_number(const unsigned long inode_id) noexcept
 {
 	return get_chunk_id(inode_id) / Blocks::REFERENCES_IN_BLOCK;
@@ -52,7 +43,6 @@ static unsigned long find_chunk_in_block(const unsigned long inode_id) noexcept
 {
 	return (get_chunk_id(inode_id) % Blocks::REFERENCES_IN_BLOCK) * Blocks::REFERENCE_SIZE;
 }
-
 /**
  * This will populate  hash key and iv with
  * @param id id of the block
@@ -115,7 +105,7 @@ void BlockMapper::append_block(char* block)
 	this->map.push_back(block);
 }
 
-char* BlockMapper::get_block()
+char* BlockMapper::get_fat_data()
 {
 	return this->map[0];
 }

@@ -1,6 +1,7 @@
 #include "FileUtils/FsBlock.h"
 #include "FileUtils/PlainFs.h"
 #include "FileUtils/FsConstants.h"
+#include "Utils.h"
 #include <stdexcept>
 #include <iostream>
 
@@ -38,23 +39,6 @@ unsigned int FsBlock::chunk_size(unsigned char n) noexcept
 	return this->get_chunk_offset(n + 1) - this->get_chunk_offset(n);
 };
 
-static inline unsigned int readint(unsigned char* data, unsigned int offset) noexcept
-{
-	unsigned int a = data[offset];
-	unsigned int b = data[offset + 1];
-	unsigned int c = data[offset + 2];
-	unsigned int d = data[offset + 3];
-	return a << 24|b << 16|c << 8| d;
-}
-
-static inline void write_int(unsigned char* data, unsigned int offset, unsigned int value) noexcept
-{
-	data[offset] = static_cast<unsigned char>((value & 0xff000000) >> 24);
-	data[offset + 1] = static_cast<unsigned char>((value & 0x00ff0000) >> 16);
-	data[offset + 2] = static_cast<unsigned char>((value & 0x0000ff00) >> 8);
-	data[offset + 3] = static_cast<unsigned char>(value & 0x000000ff);
-}
-
 unsigned int FsBlock::get_chunk_offset(unsigned char n) noexcept
 {
 	unsigned int i = readint(reinterpret_cast<unsigned char *>(this->data), 1 + sizeof(int) * n);
@@ -90,9 +74,7 @@ void FsBlock::remove_chunk(unsigned char n)
 		unsigned int diff = (*next_chunk_position) - (*chunk_position);
 
 		for(unsigned int i = (*next_chunk_position); i < FsConstants::BLOCK_SIZE; i++)
-		{
 			this->data[i - diff] = this->data[i];//todo: come up with a better way
-		}
 
 		for(int i=n; i < number_of_chunks + 1; i++)
 		{

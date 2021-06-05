@@ -13,7 +13,7 @@ ConfigManager.o:
 make: Config.o ConfigManager.o
 
 test: make
-	$(CXX) $(CFLAGS)  *.o tests/Suite.cpp -I./tests/ -I./h -I../FileUtils/h -I./h -I../YdClient/h  -o Tests $(PROD_DEPS) $(TEST_DEPS)
+	$(CXX) $(CFLAGS)  *.o tests/Suite.cpp -I../h -I./tests/ -I./h -I../FileUtils/h -I./h -I../YdClient/h  -o Tests $(PROD_DEPS) $(TEST_DEPS)
 	./Tests
 
 clean:

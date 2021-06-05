@@ -117,12 +117,9 @@ std::unique_ptr<Config> config_manager::load(std::string filename)
 }
 
 
-std::unique_ptr<Config> config_manager::make(char* special_block)
+std::unique_ptr<Config> config_manager::make()
 {
  	std::unique_ptr<Config> config = std::make_unique<Config>();
-
-	for(int i = 0; i < 32; i++)
-		config->get_special_block()[i] = special_block[i];
 
 	std::string working_dir = read_string("Enter directory where encrypted data will be stored");
 	unsigned int working_dir_lenth = std::strlen(working_dir.c_str());
