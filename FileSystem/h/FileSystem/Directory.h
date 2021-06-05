@@ -18,12 +18,6 @@ struct Dirchild {
 	unsigned long inode;
 };
 
-namespace dirchild
-{
-	unsigned int dirchild_fs_size = 321;
-	unsigned int filename_buffer_len = 256;
-}
-
 class Directory
 {
 public:
@@ -52,7 +46,5 @@ namespace directory
 	void write_directory(Directory* dir, unsigned char* out);
 
 }
-
-
 
 #endif /* FILESYSTEM_H_FILESYSTEM_DIRECTORY_H_ */

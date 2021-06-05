@@ -107,7 +107,7 @@ bool BlockMapper::update_mapping(const unsigned long inode_id,
  */
 void BlockMapper::append_block(char* block)
 {
-	for(int i=0; i < Blocks::REFERENCES_IN_BLOCK; i++) {
+	for(unsigned long i = 0; i < Blocks::REFERENCES_IN_BLOCK; i++) {
 		unsigned int offset = find_chunk_in_block(i);
 		char* state_pointer = block + offset + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE;
 		state_pointer[0] = static_cast<char>(BlockState::FREE);

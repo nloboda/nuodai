@@ -13,6 +13,15 @@
 #include <bits/stdc++.h>
 
 
+namespace dirchild
+{
+	unsigned int dirchild_fs_size = 321;
+	unsigned int filename_buffer_len = 256;
+}
+
+
+
+
 static inline unsigned long readlong(const unsigned char* data, const unsigned int offset) noexcept
 {
 	unsigned long a = data[offset];
@@ -74,7 +83,7 @@ unsigned int Directory::count_children()
 
 unsigned long Directory::get_inode_by_name(const char* name)
 {
-	for(int i = 0; i < this->children.size(); i++)
+	for(unsigned int i = 0; i < this->children.size(); i++)
 		if(std::strcmp(name, children[i].name) == 0)
 			return children[i].inode;
 	return 0;
@@ -106,13 +115,13 @@ std::unique_ptr<Directory> directory::read_directory(const unsigned char* data)
 
 	for(int i = 0; i < size; i++)
 	{
-		int offset = 2 + i*dirchild::dirchild_fs_size;
+		int offset = 2 + i * dirchild::dirchild_fs_size;
 		unsigned long inode = readlong(data, offset + 256);
 		unsigned char inode_type = (data + offset + 256 + 64)[0];
 		if(static_cast<unsigned char>(filesystem::InodeType::Dir)==inode_type)
 		{
 			dir->mkdir(reinterpret_cast<const char*>(data + offset), inode);
-		}else{
+		} else {
 			throw std::runtime_error("not supported");
 		}
 	}

@@ -17,6 +17,8 @@
 #define ERR_OPENSSL_DIGEST_FINALIZE_FILED std::runtime_error("Openssl's digest filanize failed");
 #define ERR_WORKING_DIRECTORY_NOT_ENDING_WITH_SLASH std::runtime_error("Working directory name should end with /");
 #define ERR_WORKING_DIRECTORY_PATH_IS_EMPTY std::runtime_error("Working may not be empty");
+#define ERR_DIRECTORY_SHOULD_ENDS_WITH_SLASH(dirname) std::runtime_error("Working directory name should end with / " + dirname + " given")
+#define ERR_CANT_OPEN_FILE(filename) std::runtime_error("Can't open the file: " + std::string(filename));
 
 namespace plainfs_guts
 {
@@ -37,8 +39,7 @@ inline void validate_working_direcotory(const std::string working_directory)
 		throw ERR_WORKING_DIRECTORY_PATH_IS_EMPTY;
 
 	char last_char = working_directory.c_str()[directory_size - 1];
-	if(last_char != '/')
-		throw std::runtime_error("Working directory name should end with / " + working_directory + " given");
+	if(last_char != '/') throw ERR_DIRECTORY_SHOULD_ENDS_WITH_SLASH(working_directory);
 
 	const int max_directory_lenth = plainfs_guts::FILENAME_BUFFER_SIZE - plainfs_guts::FILENAME_LENGTH - 1;
 	if(directory_size > max_directory_lenth)
@@ -107,8 +108,7 @@ void PlainFs::read_plain(const char* block, char* buffer)
 	FileUtils::hash_to_name(reinterpret_cast<const unsigned char*>(block), reinterpret_cast<unsigned char *>(filename_buffer));
 
 	FILE* block_file = fopen(plainfs_guts::filename_buffer, "rb");
-	if(block_file == nullptr)
-		throw std::runtime_error("Can't open the file: " + std::string(plainfs_guts::filename_buffer));
+	if(block_file == nullptr) throw ERR_CANT_OPEN_FILE(plainfs_guts::filename_buffer);
 
 	fread(buffer, FsConstants::BLOCK_SIZE, 1, block_file);
 	fclose(block_file);

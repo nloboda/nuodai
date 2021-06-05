@@ -132,6 +132,8 @@ unsigned long InodeManager::suballocate(unsigned long int inode, unsigned int si
 		}
 		case BlockState::LOCKED:
 			throw std::runtime_error("Operation Not Supported");
+		default:
+			throw std::runtime_error("Oh snap should not have happened");
 	}
 }
 
@@ -167,7 +169,7 @@ std::unique_ptr<char> InodeManager::save()
 std::unique_ptr<char> InodeManager::make_block(const char* iv)
 {
 	char* in = new char[FsConstants::BLOCK_SIZE];
-	for(int i = 0; i < FsConstants::BLOCK_SIZE; i++) in[i] = 0;
+	for(unsigned long i = 0; i < FsConstants::BLOCK_SIZE; i++) in[i] = 0;
 
 	std::unique_ptr<char> block = std::unique_ptr<char>(new char[32]);
 	this->crypto_layer->write_encrypted(in, block.get(), iv);

@@ -126,7 +126,7 @@ std::unique_ptr<Config> config_manager::make(char* special_block)
 
 	std::string working_dir = read_string("Enter directory where encrypted data will be stored");
 	unsigned int working_dir_lenth = std::strlen(working_dir.c_str());
-	for(int i = 0; i < working_dir_lenth; i++)
+	for(unsigned int i = 0; i < working_dir_lenth; i++)
 		config->get_working_dir()[i] = working_dir[i];
 	config->get_working_dir()[working_dir_lenth] = '\0';
 

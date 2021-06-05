@@ -142,10 +142,10 @@ void FsBlock::resize_chunk(unsigned char n, unsigned int new_size) noexcept
 	//TODO: we should use memcpy here instead if setting bytes manually
 	if(size_diff > 0)
 	{
-		for(int i = FsConstants::BLOCK_SIZE -1 ;i >= next_chunk_offset + size_diff; i--)
+		for(unsigned long i = FsConstants::BLOCK_SIZE - 1 ;i >= next_chunk_offset + size_diff; i--)
 			this->data[i] = this->data[i - size_diff];
 	} else {
-		for(int i = next_chunk_offset + size_diff;i < FsConstants::BLOCK_SIZE + size_diff;i++)
+		for(unsigned long i = next_chunk_offset + size_diff; i < FsConstants::BLOCK_SIZE + size_diff;i++)
 				this->data[i] = this->data[i - size_diff];
 	}
 
