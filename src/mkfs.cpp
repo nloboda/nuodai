@@ -32,7 +32,14 @@ static int make(int argc, char** argv)
 	InodeManager* im = new InodeManager(bm, cl, config->get_iv());
 	im->new_fat();
 	im->save();
-	im->suballocate(0, 1); //TODO: fixme this is dirty hack to make root dir have inode=1
+	/**
+	 * TODO: fixme this is dirty hack to make root dir have inode=1
+	 * fuse expects root inode to be 1 in our case first inode we create is 0
+	 * we can work around this in 2 ways.
+	 * Just -1 from inode when it comes from fuse, or
+	 * we can store some data in this 0 inode. (perhaps storing it in config is still better)
+	 */
+	im->suballocate(0, 1);
 	Directory root_dir;
 	root_dir.mkdir("whatever", 2);
 	root_dir.mkdir("whatever_else", 3);
