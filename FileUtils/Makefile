@@ -43,5 +43,6 @@ test: make
 
 clean:
 	find . -name \*.o -exec rm {} \;
+	rm -Rf tmp
 	rm -f Tests
 
