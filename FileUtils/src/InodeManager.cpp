@@ -159,7 +159,7 @@ void InodeManager::load(char* special_block)
 }
 std::unique_ptr<char> InodeManager::save()
 {
-	const char const * special_block_data = this->block_mapper->get_fat_data();
+	const char* special_block_data = this->block_mapper->get_fat_data();
 	std::unique_ptr<char> new_special_block_hash = std::unique_ptr<char>(new char[32]);
 	this->crypto_layer->write_encrypted(special_block_data, new_special_block_hash.get(), this->special_block_iv.get());
 	return new_special_block_hash;
