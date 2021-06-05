@@ -17,9 +17,13 @@ public:
 	InodeManager(BlockMapper* block_mapper, CryptoLayer* crypto_layer);
 	~InodeManager();
 
-	const char* read(unsigned long inode);
+	char* read(unsigned long inode);
 
-	unsigned long allocate(unsigned long inode, unsigned int size);
+	unsigned long suballocate(unsigned long inode, unsigned int size);
+
+	unsigned long allocate(unsigned int size);
+
+	bool resize(unsigned long inode, unsigned int size);
 
 private:
 	BlockMapper* block_mapper;
