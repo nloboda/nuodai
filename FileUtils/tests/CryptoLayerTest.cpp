@@ -32,7 +32,7 @@ public:
 	{
 		const unsigned char* key = reinterpret_cast<const unsigned char*>("any_randomKey goesHere$%@#$%@^%@");
 
-		this->plain_fs = new PlainFs("/home/wer/yad_tmp/");
+		this->plain_fs = new PlainFs("./tmp/");
 		this->sut = new CryptoLayer(plain_fs, key);
 	}
 

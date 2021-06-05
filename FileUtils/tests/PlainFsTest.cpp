@@ -26,7 +26,7 @@ public:
 	void setUp()
 	{
 		//TODO: this is just retadred! should be replaced with somethng meaningful
-		this->sut = new PlainFs("/home/wer/yad_tmp/");
+		this->sut = new PlainFs("./tmp/");
 	}
 
 	void tearDown()

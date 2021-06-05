@@ -38,6 +38,7 @@ make: FileUtils.o PlainFs.o CryptoLayer.o FsBlock.o CryptoBlockData.o BlockMappe
 	
 test: make
 	$(CXX) $(CFLAGS) -o Tests  *.o tests/Suite.cpp -I./tests/ -I./h $(PROD_DEPS) $(TEST_DEPS)
+	mkdir tmp
 	./Tests
 
 clean:
