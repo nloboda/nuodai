@@ -63,9 +63,9 @@ BlockState BlockMapper::find_mapping(const unsigned long inode_id,
 
 	unsigned char* block = reinterpret_cast<unsigned char*>(allocation_data);
 	*hash = block;
-	*iv = block + BLOCK_MAPPER_HASH_SIZE;
+	*iv = block + Blocks::BLOCK_MAPPER_HASH_SIZE;
 
-	char bs = (allocation_data + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE)[0];
+	char bs = (allocation_data + Blocks::BLOCK_MAPPER_HASH_SIZE + Blocks::BLOCK_MAPPER_IV_SIZE)[0];
 	BlockState state = static_cast<BlockState>(bs);
 	return state;
 }
@@ -86,10 +86,10 @@ bool BlockMapper::update_mapping(const unsigned long inode_id,
 	if(this->map.size() <= block_number) return false;
 
 	unsigned char* block = reinterpret_cast<unsigned char*>(this->map.at(block_number) + offset_in_block);
-	std::memcpy(block, hash, BLOCK_MAPPER_HASH_SIZE);
-	std::memcpy(block + BLOCK_MAPPER_HASH_SIZE , iv, BLOCK_MAPPER_IV_SIZE);
+	std::memcpy(block, hash, Blocks::BLOCK_MAPPER_HASH_SIZE);
+	std::memcpy(block + Blocks::BLOCK_MAPPER_HASH_SIZE , iv, Blocks::BLOCK_MAPPER_IV_SIZE);
 	char c = static_cast<char>(BlockState::ALLOCATED);
-	std::memcpy(block + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE, reinterpret_cast<unsigned char*>(&c), 1);
+	std::memcpy(block + Blocks::BLOCK_MAPPER_HASH_SIZE + Blocks::BLOCK_MAPPER_IV_SIZE, reinterpret_cast<unsigned char*>(&c), Blocks::BLOCK_MAPPER_STATE_SIZE);
 	return true;
 }
 
@@ -97,7 +97,7 @@ inline static void mark_all_chunks_as_free(char* block)
 {
 	for(unsigned long i = 0; i < Blocks::REFERENCES_IN_BLOCK; i++) {
 		unsigned int offset = find_chunk_in_block(i);
-		char* state_pointer = block + offset + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE;
+		char* state_pointer = block + offset + Blocks::BLOCK_MAPPER_HASH_SIZE + Blocks::BLOCK_MAPPER_IV_SIZE;
 		state_pointer[0] = static_cast<char>(BlockState::FREE);
 	}
 }
