@@ -1,0 +1,9 @@
+[requires]
+cppunit/1.15.1
+openssl/1.1.1i
+fuse3/3.9.1@bobrofon/stable
+libcurl/7.74.0
+jsoncpp/1.9.4
+
+[generators]
+make
