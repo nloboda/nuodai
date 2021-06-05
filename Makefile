@@ -39,9 +39,9 @@ clean:
 	$(MAKE) -C Configuration clean
 	$(MAKE) -C Fuse clean
 	$(MAKE) -C FileSystem clean
-	rm -Rf out/*
 	rm -f a.out
 	rm -Rf docs
+	rm -Rf *.o
 
 test:
 	$(MAKE) -C YdClient test
