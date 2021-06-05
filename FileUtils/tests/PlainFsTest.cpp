@@ -16,7 +16,7 @@ private:
 	PlainFs* sut;
 	char* generate_buf()
 	{
-		char* c = new char[32*1024];
+		char* c = new char[32 * 1024];
 		for(int i=0; i < 32 * 1024; i++) c[i] = i % 256;
 		return c;
 	}
@@ -25,7 +25,8 @@ private:
 public:
 	void setUp()
 	{
-		this->sut = new PlainFs("/home/user/yad_tmp/");
+		//TODO: this is just retadred! should be replaced with somethng meaningful
+		this->sut = new PlainFs("/home/wer/yad_tmp/");
 	}
 
 	void tearDown()

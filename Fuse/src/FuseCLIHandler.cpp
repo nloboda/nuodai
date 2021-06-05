@@ -15,7 +15,6 @@
 #include <fuse3/fuse.h>
 #include <fuse3/fuse_common.h>
 #include <fuse3/fuse_lowlevel.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 int FuseCLIHandler::main(int argc, char** argv)
@@ -35,7 +34,8 @@ int FuseCLIHandler::main(int argc, char** argv)
 
 	struct fuse_session *se = make_session(&args, &opts);
 
-	if (se == nullptr){
+	if (se == nullptr)
+	{
 		free(opts.mountpoint);
 		fuse_opt_free_args(&args);
 		return -1;
@@ -74,14 +74,16 @@ void FuseCLIHandler::show_version()
 bool FuseCLIHandler::validate_input(fuse_args* args, fuse_cmdline_opts* opts, char* program_name)
 {
 
-	if (opts->show_help) {
+	if (opts->show_help)
+	{
 		this->show_help(program_name);
 		return false;
 	} else if (opts->show_version) {
 		this->show_version();
 		return false;
 	}
-	if(opts->mountpoint == nullptr) {
+	if(opts->mountpoint == nullptr)
+	{
 		this->show_help(program_name);
 		return false;
 	}
@@ -114,11 +116,14 @@ fuse_session* FuseCLIHandler::make_session(fuse_args* args, fuse_cmdline_opts* o
 fuse_lowlevel_ops* FuseCLIHandler::get_fuse_ll_ops()
 {
 	fuse_lowlevel_ops *a = new fuse_lowlevel_ops;
-	FuseOperationsSupport::init("config.bin");
-	a->lookup	= FuseOperationsSupport::lookup;
-	a->getattr	= FuseOperationsSupport::getattr;
-	a->readdir	= FuseOperationsSupport::readdir;
-	a->open		= FuseOperationsSupport::open;
-	a->read		= FuseOperationsSupport::read;
+	FuseOperationsSupport::init("config.bin");//TODO: read this from args!
+	a->lookup		= FuseOperationsSupport::lookup;
+	a->getattr		= FuseOperationsSupport::getattr;
+	a->readdir		= FuseOperationsSupport::readdir;
+	a->open			= FuseOperationsSupport::open;
+	a->read			= FuseOperationsSupport::read;
+	a->opendir		= FuseOperationsSupport::opendir;
+	a->releasedir	= FuseOperationsSupport::releasedir;
+	a->forget		= FuseOperationsSupport::forget;
 	return a;
 }

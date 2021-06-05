@@ -34,6 +34,14 @@ public:
 
 	static void getattr(fuse_req_t req, fuse_ino_t ino,
 				     struct fuse_file_info *fi);
+	static void opendir(fuse_req_t req, fuse_ino_t ino,
+			 struct fuse_file_info *fi);
+	static void releasedir(fuse_req_t req, fuse_ino_t ino,
+		    struct fuse_file_info *fi);
+	static void forget(fuse_req_t req, fuse_ino_t ino, uint64_t nlookup);
+
+	static void mkdir(fuse_req_t req, fuse_ino_t parent, const char *name,
+		       mode_t mode);
 };
 
 

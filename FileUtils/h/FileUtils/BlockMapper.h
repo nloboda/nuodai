@@ -10,8 +10,9 @@ namespace Blocks
 {
 	constexpr const unsigned int BLOCK_MAPPER_HASH_SIZE = 32;
 	constexpr const unsigned int BLOCK_MAPPER_IV_SIZE = 16;
+	constexpr const unsigned int PARENT_REFERENCE_SIZE = 8;
 	constexpr const unsigned int BLOCK_MAPPER_STATE_SIZE = 1;
-	constexpr const unsigned int REFERENCE_SIZE = BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE + BLOCK_MAPPER_STATE_SIZE;
+	constexpr const unsigned int REFERENCE_SIZE = BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE + PARENT_REFERENCE_SIZE +  BLOCK_MAPPER_STATE_SIZE;
 	constexpr const unsigned long REFERENCES_IN_BLOCK = FsConstants::BLOCK_SIZE / REFERENCE_SIZE;
 }
 
