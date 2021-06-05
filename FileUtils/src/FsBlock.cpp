@@ -23,26 +23,22 @@ FsBlock::~FsBlock()
 void FsBlock::clear()
 {
 	for(unsigned int i = 0; i < FsConstants::BLOCK_SIZE; i++)
-	{
 		this->data[i] = 0;
-	}
 	//TODO: should implement
 	this->set_chunk_offset(0, 1 + 256 * sizeof(int));
 }
 
-unsigned char FsBlock::count_chunks()
+unsigned char FsBlock::count_chunks() noexcept
 {
 	return reinterpret_cast<unsigned char*>(this->data)[0];
 };
 
-unsigned int FsBlock::chunk_size(unsigned char n)
+unsigned int FsBlock::chunk_size(unsigned char n) noexcept
 {
-	unsigned int* chunk_address = reinterpret_cast<unsigned int *>(this->data + 1 + sizeof(int) * n);
-	unsigned int* next_chunk_address = reinterpret_cast<unsigned int *> (this->data + 1 + sizeof(int) * (n + 1));
-	return (*next_chunk_address) - (*chunk_address);
+	return this->get_chunk_offset(n + 1) - this->get_chunk_offset(n);
 };
 
-static inline unsigned int readint(char* data, unsigned int offset)
+static inline unsigned int readint(unsigned char* data, unsigned int offset) noexcept
 {
 	unsigned int a = data[offset];
 	unsigned int b = data[offset + 1];
@@ -51,30 +47,31 @@ static inline unsigned int readint(char* data, unsigned int offset)
 	return a << 24|b << 16|c << 8| d;
 }
 
-static inline void write_int(char* data, unsigned int offset, unsigned int value)
+static inline void write_int(unsigned char* data, unsigned int offset, unsigned int value) noexcept
 {
-	data[offset] = (unsigned char) ((value & 0xff000000) >> 24);
-	data[offset + 1] = (unsigned char) ((value & 0x00ff0000) >> 16);
-	data[offset + 2] = (unsigned char) ((value & 0x0000ff00) >> 8);
-	data[offset + 3] = (unsigned char) (value & 0x000000ff);
+	data[offset] = static_cast<unsigned char>((value & 0xff000000) >> 24);
+	data[offset + 1] = static_cast<unsigned char>((value & 0x00ff0000) >> 16);
+	data[offset + 2] = static_cast<unsigned char>((value & 0x0000ff00) >> 8);
+	data[offset + 3] = static_cast<unsigned char>(value & 0x000000ff);
 }
 
-unsigned int FsBlock::get_chunk_offset(unsigned char n)
+unsigned int FsBlock::get_chunk_offset(unsigned char n) noexcept
 {
-	return readint(this->data, 1 + sizeof(int) * n);
+	unsigned int i = readint(reinterpret_cast<unsigned char *>(this->data), 1 + sizeof(int) * n);
+	return i;
 }
 
 void FsBlock::set_chunk_offset(unsigned char n, unsigned int value)
 {
 	unsigned int offset = 1 + sizeof(int) * n;
-	write_int(this->data, offset, value);
+	write_int(reinterpret_cast<unsigned char*>(this->data), offset, value);
 }
 
-const char* FsBlock::read_chunk(unsigned char n)
+char* FsBlock::read_chunk(unsigned char n)
 {
 	unsigned int offset = this->get_chunk_offset(n);
 	if(offset > FsConstants::BLOCK_SIZE) throw std::runtime_error("outside of chunk pointer");
-	return reinterpret_cast<const char *>(this->data + offset);
+	return this->data + offset;
 };
 
 void FsBlock::remove_chunk(unsigned char n)
@@ -105,16 +102,14 @@ void FsBlock::remove_chunk(unsigned char n)
 	}
 };
 
-int FsBlock::get_first_skipped_chunk()
+int FsBlock::get_first_skipped_chunk() noexcept
 {
 	for(int i = 0; i < this->count_chunks(); i++)
-	{
 		if(this->chunk_size(i) == 0) return i;
-	}
 	return -1;
 };
 
-unsigned int FsBlock::free_bytes()
+unsigned int FsBlock::free_bytes() noexcept
 {
 	unsigned char chunks = this->count_chunks();
 	return plainfs::BLOCK_SIZE - this->chunk_size(chunks);
@@ -137,3 +132,16 @@ char* FsBlock::insert_chunk(unsigned int chunk_size)
 
 	return this->data + next_chunk_offset;
 };
+
+void FsBlock::resize_chunk(unsigned char n, unsigned int new_size)
+{
+	unsigned int old_size = this->chunk_size(n);
+	int size_diff = new_size - old_size;
+	unsigned int next_chunk_offset = this->get_chunk_offset(n + 1);
+
+	for(int i = plainfs::BLOCK_SIZE -1 ;i >= next_chunk_offset + size_diff; i--)
+		this->data[i] = this->data[i - size_diff];
+
+	for(int i = n + 1;i < this->count_chunks(); i++)
+		this->set_chunk_offset(i, this->get_chunk_offset(i) + size_diff);
+}
