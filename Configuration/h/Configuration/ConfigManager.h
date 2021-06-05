@@ -14,7 +14,7 @@
 namespace config_manager
 {
 	std::unique_ptr<Config> load(std::string filename);
-	std::unique_ptr<Config> make(std::string filename, char* entry);
+	std::unique_ptr<Config> make(char* entry);
 	void save(Config* c, std::string filename);
 
 }

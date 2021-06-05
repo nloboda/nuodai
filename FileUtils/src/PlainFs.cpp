@@ -38,7 +38,7 @@ inline void validate_working_direcotory(const std::string working_directory)
 
 	char last_char = working_directory.c_str()[directory_size - 1];
 	if(last_char != '/')
-		throw ERR_WORKING_DIRECTORY_NOT_ENDING_WITH_SLASH;
+		throw std::runtime_error("Working directory name should end with / " + working_directory + " given");
 
 	const int max_directory_lenth = plainfs_guts::FILENAME_BUFFER_SIZE - plainfs_guts::FILENAME_LENGTH - 1;
 	if(directory_size > max_directory_lenth)
@@ -108,7 +108,7 @@ void PlainFs::read_plain(const char* block, char* buffer)
 
 	FILE* block_file = fopen(plainfs_guts::filename_buffer, "rb");
 	if(block_file == nullptr)
-		throw std::runtime_error("Can't open the file");
+		throw std::runtime_error("Can't open the file: " + std::string(plainfs_guts::filename_buffer));
 
 	fread(buffer, FsConstants::BLOCK_SIZE, 1, block_file);
 	fclose(block_file);
@@ -119,12 +119,12 @@ void PlainFs::read_plain(const char* block, char* buffer)
 /**
  * writes buffer into block
  * \param buffer buffer to be written
- * \param block new block sha256 hash
+ * \param block (out) new block sha256 hash
  */
 void PlainFs::write_plain(const char* buffer, char* block)
 {
 	unsigned char* digest;
-	if((digest = reinterpret_cast<unsigned char *>(OPENSSL_malloc(EVP_MD_size(EVP_sha256()))) == nullptr))
+	if((digest = reinterpret_cast<unsigned char *>(OPENSSL_malloc(EVP_MD_size(EVP_sha256())))) == nullptr)
 		throw ERR_OPENSSL_ALLOC_FAILED;
 
 	hash_block(reinterpret_cast<const unsigned char *>(buffer), digest);

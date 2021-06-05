@@ -13,7 +13,6 @@
 #include <bits/stdc++.h>
 
 
-
 static inline unsigned long readlong(const unsigned char* data, const unsigned int offset) noexcept
 {
 	unsigned long a = data[offset];
@@ -46,6 +45,7 @@ Directory::Directory(): children(std::vector<Dirchild>{})
 {
 
 };
+
 void Directory::mkdir(const char* name, 	unsigned long inode)
 {
 	Dirchild dc;
@@ -74,7 +74,7 @@ unsigned int Directory::count_children()
 
 unsigned long Directory::get_inode_by_name(const char* name)
 {
-	for(int i=0; i < this->children.size();i++)
+	for(int i = 0; i < this->children.size(); i++)
 		if(std::strcmp(name, children[i].name) == 0)
 			return children[i].inode;
 	return 0;
@@ -106,7 +106,7 @@ std::unique_ptr<Directory> directory::read_directory(const unsigned char* data)
 
 	for(int i = 0; i < size; i++)
 	{
-		int offset = 2 + i*(256 + 64 + 1);
+		int offset = 2 + i*dirchild::dirchild_fs_size;
 		unsigned long inode = readlong(data, offset + 256);
 		unsigned char inode_type = (data + offset + 256 + 64)[0];
 		if(static_cast<unsigned char>(filesystem::InodeType::Dir)==inode_type)
@@ -121,17 +121,15 @@ std::unique_ptr<Directory> directory::read_directory(const unsigned char* data)
 
 static inline void write_dir_child(Dirchild dc, unsigned char* out)
 {
-	std::memcpy(out, dc.name, 256);
-	write_long(out, 256, dc.inode);
-	out[256 + 64] = static_cast<unsigned char>(dc.type);
+	std::memcpy(out, dc.name, dirchild::filename_buffer_len);
+	write_long(out, dirchild::filename_buffer_len, dc.inode);
+	out[dirchild::filename_buffer_len + 64] = static_cast<unsigned char>(dc.type);
 }
 
 void directory::write_directory(Directory* dir, unsigned char* out)
 {
 	out[0] = 0;
 	out[1] = static_cast<unsigned char>(dir->count_children());
-	for(unsigned int i=0;i< dir->count_children();i++)
-	{
-		write_dir_child(dir->get_child(i), out + 2 + i*(256+64+1));
-	}
+	for(unsigned int i = 0; i < dir->count_children(); i++)
+		write_dir_child(dir->get_child(i), out + 2 + i * dirchild::dirchild_fs_size);
 }

@@ -54,14 +54,12 @@ inline static std::string read_password(bool make_repeat)
 	}
 }
 
-inline static std::string read_string(std::string promt) noexcept
+static std::string read_string(std::string promt)
 {
 	std::string s;
-	while(s.empty())
-	{
-		std::cout << promt << ": ";
-		std::getline(std::cin, s);
-	}
+	do {
+		std::cout << promt << ": " << std::flush;
+	}while (std::getline(std::cin, s) && s.empty());
 	return s;
 }
 
@@ -96,7 +94,8 @@ std::unique_ptr<Config> config_manager::load(std::string filename)
 {
 
 	std::unique_ptr<Config> c = std::make_unique<Config>();
-	std::ifstream ifs(filename);
+	std::ifstream ifs(filename, std::ifstream::binary );
+	if(!ifs.is_open()) throw new std::invalid_argument("Can't open " + filename);
 	ifs.read(c->get_data(), config::size);
 	ifs.close();
 
@@ -118,18 +117,18 @@ std::unique_ptr<Config> config_manager::load(std::string filename)
 }
 
 
-std::unique_ptr<Config> config_manager::make(std::string filename, char* special_block)
+std::unique_ptr<Config> config_manager::make(char* special_block)
 {
  	std::unique_ptr<Config> config = std::make_unique<Config>();
 
 	for(int i = 0; i < 32; i++)
 		config->get_special_block()[i] = special_block[i];
 
-	const char* working_dir = read_string("Enter directory where encrypted data will be stored").c_str();
-
-	for(int i = 0; i < std::strlen(working_dir); i++)
+	std::string working_dir = read_string("Enter directory where encrypted data will be stored");
+	unsigned int working_dir_lenth = std::strlen(working_dir.c_str());
+	for(int i = 0; i < working_dir_lenth; i++)
 		config->get_working_dir()[i] = working_dir[i];
-
+	config->get_working_dir()[working_dir_lenth] = '\0';
 
 	return config;
 }
@@ -152,7 +151,9 @@ void config_manager::save(Config* config, std::string filename)
 			&len)) ENCRYPT_FAIL;
 
 	EVP_CIPHER_CTX_free(context);
-	std::ofstream of(filename, std::ofstream::out);
+
+	std::ofstream of(filename, std::ofstream::out | std::ofstream::binary| std::ofstream::trunc);
+	if(!of.is_open()) throw std::runtime_error("Can't open file " + filename + " for writing");
 	of.write(encrypted_data, config::size);
 	of.close();
 }

@@ -9,7 +9,7 @@
 #include <json/json.h>
 #include <stdexcept>
 #include <memory>
-#include "FileUtils/PlainFs.h"
+#include "FileUtils/FsConstants.h"
 
 #define YANDEX_UPLOAD_PREFIX "https://cloud-api.yandex.net/v1/disk/resources/upload?path="
 #define YANDEX_DOWNLOAD_PREFIX "https://cloud-api.yandex.net/v1/disk/resources/download?path="
@@ -99,15 +99,15 @@ static std::string get_pull_url(YandexAuthenticator* auth, unsigned const char* 
 
 static size_t read_callback(char *buffer, size_t size, size_t nitems, void *userdata)
 {
-	memcpy(buffer, userdata, plainfs::BLOCK_SIZE);
-	return plainfs::BLOCK_SIZE;
+	memcpy(buffer, userdata, FsConstants::BLOCK_SIZE);
+	return FsConstants::BLOCK_SIZE;
 }
 
 static size_t file_download_callback(void *contents, size_t size, size_t nmemb, void *ptr)
 {
-	if(size!=plainfs::BLOCK_SIZE) throw std::runtime_error("Downloaded chunk has different size!");
-	memcpy(ptr, contents, plainfs::BLOCK_SIZE);
-	return plainfs::BLOCK_SIZE;
+	if(size != FsConstants::BLOCK_SIZE) throw std::runtime_error("Downloaded chunk has different size!");
+	memcpy(ptr, contents, FsConstants::BLOCK_SIZE);
+	return FsConstants::BLOCK_SIZE;
 }
 
 void YandexDiskClient::pull(unsigned const char* hash)
@@ -116,7 +116,7 @@ void YandexDiskClient::pull(unsigned const char* hash)
 	std::cout << pull_url << std::endl;
 	CURL *curl = curl_easy_init();
 	if(!curl) throw std::runtime_error("curl_easy_init failed");
-	char buffer[plainfs::BLOCK_SIZE];
+	char buffer[FsConstants::BLOCK_SIZE];
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, file_download_callback);
 	curl_easy_setopt(curl, CURLOPT_URL, pull_url.c_str());
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, buffer);
@@ -133,14 +133,14 @@ void YandexDiskClient::push(unsigned const char* hash)
 	std::cout << push_url << std::endl;
 	CURL *curl = curl_easy_init();
 	if(!curl) throw std::runtime_error("curl_easy_init failed");
-	char buffer[plainfs::BLOCK_SIZE];
+	char buffer[FsConstants::BLOCK_SIZE];
 	filesystem->read_plain((const char*)hash,buffer);
 	curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
 	curl_easy_setopt(curl, CURLOPT_URL, push_url.c_str());
 	curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 	curl_easy_setopt(curl, CURLOPT_PUT, 1);
 	curl_easy_setopt(curl, CURLOPT_READDATA, buffer);
-	curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE, plainfs::BLOCK_SIZE);
+	curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE, FsConstants::BLOCK_SIZE);
 	int res = curl_easy_perform(curl);
 	if(res!=CURLE_OK) throw std::runtime_error("push attempt failed");
 }

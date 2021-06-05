@@ -71,7 +71,7 @@ char* FsBlock::read_chunk(unsigned char n)
 {
 	unsigned int offset = this->get_chunk_offset(n);
 	if(offset > FsConstants::BLOCK_SIZE) throw std::runtime_error("outside of chunk pointer");
-	return this->data + offset;
+	return this->data + this->header_size() + offset;
 };
 
 void FsBlock::remove_chunk(unsigned char n)
@@ -151,4 +151,10 @@ void FsBlock::resize_chunk(unsigned char n, unsigned int new_size) noexcept
 
 	for(int i = n + 1;i < this->count_chunks(); i++)
 		this->set_chunk_offset(i, this->get_chunk_offset(i) + size_diff);
+}
+
+unsigned int FsBlock::header_size() noexcept
+{
+	unsigned char all_chunks = this->count_chunks();
+	return 1 + (all_chunks + 1)*sizeof(int);
 }

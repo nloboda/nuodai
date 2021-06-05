@@ -60,19 +60,23 @@ static unsigned long find_chunk_in_block(const unsigned long inode_id) noexcept
  * @param key an encryption key
  * @param iv initialization vector
  */
-bool BlockMapper::find_mapping(const unsigned long inode_id,
+BlockState BlockMapper::find_mapping(const unsigned long inode_id,
 		unsigned char** hash,
 		unsigned char** iv)
 {
 	unsigned long chunk_number = find_chunk_number(inode_id);
 	unsigned long offset_in_block = find_chunk_in_block(inode_id);
 
-	if(this->map.size() <= chunk_number) return false;
+	if(this->map.size() <= chunk_number) return BlockState::NOT_EXISTS;
 
-	unsigned char* block = reinterpret_cast<unsigned char*>(this->map.at(chunk_number) + offset_in_block);
+	char* allocation_data = this->map.at(chunk_number) + offset_in_block;
+
+	unsigned char* block = reinterpret_cast<unsigned char*>(allocation_data);
 	*hash = block;
 	*iv = block + BLOCK_MAPPER_HASH_SIZE;
-	return true;
+
+	BlockState state = static_cast<BlockState>((allocation_data + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE)[0]);
+	return state;
 }
 
 /**
@@ -93,6 +97,7 @@ bool BlockMapper::update_mapping(const unsigned long inode_id,
 	unsigned char* block = reinterpret_cast<unsigned char*>(this->map.at(block_number) + offset_in_block);
 	std::memcpy(block, hash, BLOCK_MAPPER_HASH_SIZE);
 	std::memcpy(block + BLOCK_MAPPER_HASH_SIZE , iv, BLOCK_MAPPER_IV_SIZE);
+	reinterpret_cast<char*>(block + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE)[0] = static_cast<char>(BlockState::ALLOCATED);
 	return true;
 }
 
@@ -102,5 +107,15 @@ bool BlockMapper::update_mapping(const unsigned long inode_id,
  */
 void BlockMapper::append_block(char* block)
 {
+	for(int i=0; i < Blocks::REFERENCES_IN_BLOCK; i++) {
+		unsigned int offset = find_chunk_in_block(i);
+		char* state_pointer = block + offset + BLOCK_MAPPER_HASH_SIZE + BLOCK_MAPPER_IV_SIZE;
+		state_pointer[0] = static_cast<char>(BlockState::FREE);
+	}
 	this->map.push_back(block);
+}
+
+char* BlockMapper::get_block()
+{
+	return this->map[0];
 }

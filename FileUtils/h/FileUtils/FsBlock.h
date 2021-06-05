@@ -41,6 +41,7 @@ class FsBlock
 	private:
 		char* data;
 
+		unsigned int header_size() noexcept;
 		int get_first_skipped_chunk() noexcept;
 		void set_chunk_offset(unsigned char n, unsigned int value) noexcept;
 };

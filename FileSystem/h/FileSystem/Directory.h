@@ -18,6 +18,12 @@ struct Dirchild {
 	unsigned long inode;
 };
 
+namespace dirchild
+{
+	unsigned int dirchild_fs_size = 321;
+	unsigned int filename_buffer_len = 256;
+}
+
 class Directory
 {
 public:
