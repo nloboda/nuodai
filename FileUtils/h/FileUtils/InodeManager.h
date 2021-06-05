@@ -22,10 +22,22 @@ public:
 
 	void flush(unsigned long inode);
 
+	/**
+	 * will suballocate a chunk in block. return chunk size or zero if suballocation failed
+	 * @param inode inode in which we want to suballocate
+	 * @param size suballocation size in bytes
+	 * @return inode of suballocation
+	 */
 	unsigned long suballocate(unsigned long inode, unsigned int size);
 
 	unsigned long allocate(unsigned int size);
 
+	/**
+	 *	attempt to resize block
+	 *	@param inode inote to be resized
+	 *	@param size new size
+	 *	@return if resize succeed
+	 */
 	bool resize(unsigned long inode, unsigned int size);
 
 	void load(char* special_block);

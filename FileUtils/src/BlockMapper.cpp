@@ -89,7 +89,10 @@ bool BlockMapper::update_mapping(const unsigned long inode_id,
 	std::memcpy(block, hash, Blocks::BLOCK_MAPPER_HASH_SIZE);
 	std::memcpy(block + Blocks::BLOCK_MAPPER_HASH_SIZE , iv, Blocks::BLOCK_MAPPER_IV_SIZE);
 	char c = static_cast<char>(BlockState::ALLOCATED);
-	std::memcpy(block + Blocks::BLOCK_MAPPER_HASH_SIZE + Blocks::BLOCK_MAPPER_IV_SIZE, reinterpret_cast<unsigned char*>(&c), Blocks::BLOCK_MAPPER_STATE_SIZE);
+	std::memcpy(
+			block + Blocks::BLOCK_MAPPER_HASH_SIZE + Blocks::BLOCK_MAPPER_IV_SIZE,
+			reinterpret_cast<unsigned char*>(&c),
+			Blocks::BLOCK_MAPPER_STATE_SIZE);
 	return true;
 }
 
