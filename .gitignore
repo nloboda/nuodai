@@ -10,3 +10,5 @@ nuodai.layout
 .project
 .settings/
 *.o
+mkfs
+mount

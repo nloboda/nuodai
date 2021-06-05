@@ -33,6 +33,7 @@ public:
 	std::unique_ptr<char> save();
 
 	std::unique_ptr<char> new_fat();
+	void reset();
 
 private:
 	BlockMapper* block_mapper;
@@ -40,6 +41,7 @@ private:
 	std::unique_ptr<char> special_block_iv;
 
 	BlockState load(unsigned long inode);
+	void set_block_state(unsigned long inode);
 
 	std::unique_ptr<char> make_block(const char* iv);
 };

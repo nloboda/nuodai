@@ -14,9 +14,6 @@ FileUtils:
 
 Configuration:
 	$(MAKE) -C Configuration
-
-Fuse: 
-	$(MAKE) -C Fuse
 	
 FileSystem:
 	$(MAKE) -C FileSystem
@@ -27,11 +24,38 @@ Configuration:
 YdClient:
 	$(MAKE) -C YdClient
 
-Main.o: Fuse FileUtils Configuration FileSystem
-	$(CXX) $(CFLAGS) $(PROD_DEPS) FileSystem/Directory.o  Fuse/FuseAdapter.o FileUtils/FileUtils.o  FileUtils/BlockMapper.o -I./Configuration/h YdClient/YandexAuthenticator.o -c src/Main.cpp -I./FileSystem/h -I./Fuse/h -I./YdClient/h -I./FileUtils/h
+Fuse: Configuration FileSystem
+	$(MAKE) -C Fuse
 
-all: Configuration Fuse FileUtils YdClient FileSystem Main.o
-	$(CXX) $(PROD_DEPS) FileSystem/Directory.o Fuse/FuseAdapter.o FileUtils/CryptoLayer.o FileUtils/BlockMapper.o FileUtils/CryptoBlockData.o FileUtils/InodeManager.o FileUtils/FsBlock.o FileUtils/FileUtils.o YdClient/YandexAuthenticator.o YdClient/YandexDiskClient.o FileUtils/PlainFs.o YdClient/Auth.o Configuration/ConfigManager.o Configuration/Config.o Main.o -o a.out -I./FileSystem/h -I./YdClient/h -I./FileUtils/h -I./Fuse/h 
+Main.o: Fuse FileUtils Configuration FileSystem
+	$(CXX) $(CFLAGS) $(PROD_DEPS) FileSystem/Directory.o  FileUtils/FileUtils.o  FileUtils/BlockMapper.o \
+	Fuse/FuseCLIHandler.o Fuse/FuseOperationsSupport.o YdClient/YandexAuthenticator.o -c src/Main.cpp \
+	-I./FileSystem/h -I./Fuse/h -I./YdClient/h -I./Configuration/h  -I./FileUtils/h
+	
+mkfs.o: Fuse FileUtils Configuration FileSystem
+	$(CXX) $(CFLAGS) $(PROD_DEPS) FileSystem/Directory.o  FileUtils/FileUtils.o  FileUtils/BlockMapper.o \
+	Fuse/FuseCLIHandler.o Fuse/FuseOperationsSupport.o -c src/mkfs.cpp \
+	-I./FileSystem/h -I./Fuse/h -I./YdClient/h -I./Configuration/h  -I./FileUtils/h
+	
+mount.o: Fuse FileUtils Configuration FileSystem
+	$(CXX) $(CFLAGS) $(PROD_DEPS) FileSystem/Directory.o  FileUtils/FileUtils.o  FileUtils/BlockMapper.o \
+	Fuse/FuseCLIHandler.o Fuse/FuseOperationsSupport.o -c src/mount.cpp \
+	-I./FileSystem/h -I./Fuse/h  -I./Configuration/h  -I./FileUtils/h
+
+mkfs: Configuration Fuse FileUtils YdClient FileSystem mkfs.o
+	$(CXX) $(PROD_DEPS) Fuse/FuseCLIHandler.o Fuse/FuseOperationsSupport.o FileSystem/Directory.o FileUtils/CryptoLayer.o \
+	FileUtils/BlockMapper.o FileUtils/CryptoBlockData.o FileUtils/InodeManager.o FileUtils/FsBlock.o FileUtils/FileUtils.o \
+	YdClient/YandexAuthenticator.o YdClient/YandexDiskClient.o FileUtils/PlainFs.o \
+	YdClient/Auth.o Configuration/ConfigManager.o Configuration/Config.o mkfs.o -o mkfs -I./FileSystem/h -I./YdClient/h -I./FileUtils/h -I./Fuse/h 
+
+mount: Configuration Fuse FileUtils FileSystem mount.o
+	$(CXX) $(CFLAGS) $(PROD_DEPS) Fuse/*.o FileSystem/Directory.o  \
+	FileUtils/*.o  \
+	Configuration/ConfigManager.o Configuration/Config.o mount.o -o mount -I./FileSystem/h  -I./FileUtils/h -I./Fuse/h 
+
+
+all: mkfs mount 
+
 
 clean:
 	$(MAKE) -C YdClient clean
