@@ -5,7 +5,7 @@ TEST_DEPS = `pkg-config --cflags --libs cppunit`
 .DEFAULT_GOAL := make
 
 YandexAuthenticator.o:
-	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/YandexAuthenticator.cpp  -I../FileUtils/h -I../Configuration/h -I./h 
+	$(CXX) $(CFLAGS) $(PROD_DEPS) ../Configuration/Configuration.o -c src/YandexAuthenticator.cpp -I../FileUtils/h -I../Configuration/h -I./h 
 
 YandexDiskClient.o:
 	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/YandexDiskClient.cpp -I./h -I../FileUtils/h -I../Configuration/h

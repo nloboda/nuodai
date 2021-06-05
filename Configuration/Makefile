@@ -4,17 +4,21 @@ PROD_DEPS = `pkg-config --cflags --libs libcurl openssl fuse3 jsoncpp`
 TEST_DEPS = `pkg-config --cflags --libs cppunit`
 .DEFAULT_GOAL := make
 
+Config.o:
+	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/Config.cpp -I./h
+
+ConfigManager.o:
+	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/ConfigManager.cpp -I./h
+
 Configuration.o:
-	$(CXX) $(CFLAGS) $(PROD_DEPS) ../FileUtils/CryptoBlockData.o -c src/Configuration.cpp -I../FileUtils/h -I./h -I../YdClient/h
+	$(CXX) $(CFLAGS) $(PROD_DEPS) -c src/Configuration.cpp -I../YdClient/h -I../FileUtils/h -I./h
 
-
-make: Configuration.o
-	#$(CXX) $(PROD_DEPS) YandexAuthenticator.o -o a.out
-	echo "done"
+make: Config.o ConfigManager.o Configuration.o
 
 test: make
-	echo "Nothing to do"
+	$(CXX) $(CFLAGS)  *.o tests/Suite.cpp -I./tests/ -I./h -I../FileUtils/h -I./h -I../YdClient/h  -o Tests $(PROD_DEPS) $(TEST_DEPS)
+	./Tests
 
 clean:
-	rm -Rf out/*
+	find . -name \*.o -exec rm {} \;
 
