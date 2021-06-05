@@ -115,7 +115,7 @@ unsigned int FsBlock::free_bytes() noexcept
 	return plainfs::BLOCK_SIZE - this->chunk_size(chunks);
 }
 
-char* FsBlock::insert_chunk(unsigned int chunk_size)
+unsigned char FsBlock::insert_chunk(unsigned int chunk_size)
 {
 	if(count_chunks() >= 0xff - 0x1) throw std::invalid_argument("all chunks are occupied");
 	int first_skipped_chunk = this->get_first_skipped_chunk();
@@ -130,7 +130,7 @@ char* FsBlock::insert_chunk(unsigned int chunk_size)
 	this->set_chunk_offset(next_chunk + 1, chunk_end_offset);
 	this->data[0]++;
 
-	return this->data + next_chunk_offset;
+	return next_chunk;
 };
 
 void FsBlock::resize_chunk(unsigned char n, unsigned int new_size) noexcept

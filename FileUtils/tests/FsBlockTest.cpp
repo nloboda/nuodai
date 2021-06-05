@@ -130,13 +130,17 @@ void FsBlockTest::FsBlock_shouldEditWholeChunk_afterSizeIncrease()
 
 void FsBlockTest::FsBlock_shouldReadSameDataFromChunk_afterDataIsWritten()
 {
+	constexpr char ANY_CHAR = 37;
 	this->sut->clear();
-	char* data_to_insert = this->sut->insert_chunk(100);
-	for(int i = 0; i < 100; i++) data_to_insert[i] = 37;
+	unsigned char chunk = this->sut->insert_chunk(100);
+
+	char* data_to_insert = this->sut->read_chunk(chunk);
+
+	for(int i = 0; i < 100; i++) data_to_insert[i] = ANY_CHAR;
 
 	const char* data_to_read = this->sut->read_chunk(0);
 
-	for(int i = 0; i < 100; i++) CPPUNIT_ASSERT(data_to_read[i] == 37);
+	for(int i = 0; i < 100; i++) CPPUNIT_ASSERT(data_to_read[i] == ANY_CHAR);
 }
 
 void FsBlockTest::FsBlock_shouldMoveUpperChunks_ifLowerChunkSizeIsReduced()
@@ -149,11 +153,10 @@ void FsBlockTest::FsBlock_shouldMoveUpperChunks_ifLowerChunkSizeIsReduced()
 
 	this->sut->resize_chunk(0, 50);
 
-	for(int i = 0;i < 50; i++)
+	for(int i = 0; i < 50; i++)
 		CPPUNIT_ASSERT(this->sut->read_chunk(0)[i] == 'a');
 
-	for(int i = 0;i< 100;i++)
+	for(int i = 0; i < 100; i++)
 		CPPUNIT_ASSERT(this->sut->read_chunk(1)[i] == 'b');
 }
-
 

@@ -32,7 +32,7 @@ class FsBlock
 		 * removes chunk. may lead to moving chunks after this chunk
 		 */
 		void remove_chunk(unsigned char n);
-		char* insert_chunk(unsigned int size);
+		unsigned char insert_chunk(unsigned int size);
 		unsigned int free_bytes() noexcept;
 		void clear();
 		unsigned int chunk_size(unsigned char n) noexcept;
