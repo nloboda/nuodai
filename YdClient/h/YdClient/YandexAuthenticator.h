@@ -11,8 +11,8 @@ class YandexAuthenticator: public HttpAuthenticator
 	public:
 	YandexAuthenticator();
 	~YandexAuthenticator();
-	void read_configuration(Configuration* config);
-	void write_configuration(Configuration* config);
+	void read_configuration(char* config);
+	void write_configuration(char* config);
 	bool authenticate();
 	struct curl_slist* header();
 	private:

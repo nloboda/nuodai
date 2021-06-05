@@ -6,8 +6,12 @@
 class YandexDiskClient
 {
 	public:
-	YandexDiskClient(YandexAuthenticator* authenticator, PlainFs* filesystem);
-	~YandexDiskClient();
+		YandexDiskClient(YandexAuthenticator* authenticator, PlainFs* filesystem);
+		YandexDiskClient(const YandexDiskClient &client) = delete;
+		YandexDiskClient& operator=(const YandexDiskClient &client) = delete;
+		YandexDiskClient(YandexDiskClient &&client);
+		YandexDiskClient& operator=(const YandexDiskClient &&client);
+		~YandexDiskClient();
 		void pull(unsigned const char* hash);
 		void push(unsigned const char* hash);
 	private:

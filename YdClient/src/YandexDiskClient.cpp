@@ -8,6 +8,7 @@
 #include <json/value.h>
 #include <json/json.h>
 #include <stdexcept>
+#include <memory>
 #include "FileUtils/PlainFs.h"
 
 #define YANDEX_UPLOAD_PREFIX "https://cloud-api.yandex.net/v1/disk/resources/upload?path="
@@ -20,6 +21,19 @@ YandexDiskClient::YandexDiskClient(YandexAuthenticator* auth, PlainFs* fs) :
 
 };
 
+YandexDiskClient::YandexDiskClient(YandexDiskClient &&client)
+{
+	this->authenticator  = client.authenticator;
+	this->filesystem = client.filesystem;
+}
+
+YandexDiskClient& YandexDiskClient::operator =(const YandexDiskClient &&client)
+{
+	this->authenticator = std::move(client.authenticator);
+	this->filesystem = std::move(client.filesystem);
+	return *this;
+}
+
 YandexDiskClient::~YandexDiskClient()
 {
 	delete this->authenticator;
@@ -30,7 +44,7 @@ static size_t write_callback(void *contents, size_t size, size_t nmemb, void *pt
 	Json::Reader reader;
 	Json::Value root;
 	if(!reader.parse((char*)contents, root)) throw std::runtime_error("We can't parse server response");
-	strcpy((char *)ptr, root["href"].asString().c_str());
+	strcpy((char *)ptr, root["href"].asString().c_str());//TODO: need to check string lenth
 
 	return nmemb;
 }

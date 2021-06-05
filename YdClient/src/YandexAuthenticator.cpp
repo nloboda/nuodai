@@ -7,7 +7,6 @@
 #include <json/json.h>
 #include <ctime>
 #include <stdexcept>
-#include <Configuration/Configuration.h>
 
 #define YANDEX_TOKEN_REQUEST_URL "https://oauth.yandex.com/authorize?response_type=code&client_id="
 #define YANDEX_APP_CLIENT_ID "5aa227f80b2349218d167ede8087cb56"
@@ -50,19 +49,24 @@ static const char* create_post_data_from_code(long code)
 	const char* s_code = std::to_string(code).c_str();
 	int dest_size = strlen(data) + strlen(s_code) + 1;
 	char* dest = new char[dest_size];
-	strcpy(dest,data);
+	strcpy(dest, data);
 	strcat(dest, s_code);
 	return dest;
 }
 
-void YandexAuthenticator::read_configuration(Configuration* c)
+void YandexAuthenticator::read_configuration(char* data)
 {
-	this->auth.expires_at = c->get_auth()->expires_at;
-	strcpy(this->auth.refresh_token, c->get_auth()->refresh_token);
-	strcpy(this->auth.token, c->get_auth()->token);
+	unsigned long int* expires_in = reinterpret_cast<unsigned long int*>(data);
+	char* token = data + sizeof(unsigned long int);
+	char* refresh_token = token + 42;
+
+	this->auth.expires_at = *expires_in;
+	strcpy(this->auth.refresh_token, refresh_token);
+	strcpy(this->auth.token, token);
+	throw std::runtime_error("not implemented");
 }
 
-void YandexAuthenticator::write_configuration(Configuration* c)
+void YandexAuthenticator::write_configuration(char* c)
 {
 
 }
