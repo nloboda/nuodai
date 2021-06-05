@@ -112,7 +112,7 @@ int FsBlock::get_first_skipped_chunk() noexcept
 unsigned int FsBlock::free_bytes() noexcept
 {
 	unsigned char chunks = this->count_chunks();
-	return plainfs::BLOCK_SIZE - this->chunk_size(chunks);
+	return FsConstants::BLOCK_SIZE - this->chunk_size(chunks);
 }
 
 unsigned char FsBlock::insert_chunk(unsigned int chunk_size)
@@ -125,7 +125,7 @@ unsigned char FsBlock::insert_chunk(unsigned int chunk_size)
 	unsigned int next_chunk_offset = this->get_chunk_offset(next_chunk);
 	unsigned int chunk_end_offset = next_chunk_offset + chunk_size;
 
-	if(chunk_end_offset > plainfs::BLOCK_SIZE) throw std::invalid_argument("block exhausted");
+	if(chunk_end_offset > FsConstants::BLOCK_SIZE) throw std::invalid_argument("block exhausted");
 
 	this->set_chunk_offset(next_chunk + 1, chunk_end_offset);
 	this->data[0]++;
@@ -142,10 +142,10 @@ void FsBlock::resize_chunk(unsigned char n, unsigned int new_size) noexcept
 	//TODO: we should use memcpy here instead if setting bytes manually
 	if(size_diff > 0)
 	{
-		for(int i = plainfs::BLOCK_SIZE -1 ;i >= next_chunk_offset + size_diff; i--)
+		for(int i = FsConstants::BLOCK_SIZE -1 ;i >= next_chunk_offset + size_diff; i--)
 			this->data[i] = this->data[i - size_diff];
 	} else {
-		for(int i = next_chunk_offset + size_diff;i < plainfs::BLOCK_SIZE + size_diff;i++)
+		for(int i = next_chunk_offset + size_diff;i < FsConstants::BLOCK_SIZE + size_diff;i++)
 				this->data[i] = this->data[i - size_diff];
 	}
 

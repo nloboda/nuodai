@@ -80,14 +80,14 @@ void CryptoLayer::write_encrypted(const char* in, char* block, const char* iv)
 
 	//blocks are multiplies of 32 bytes. Padding is not needed
 	EVP_CIPHER_CTX_set_padding(crypto_layer::ctx, 0);
-	char out[plainfs::BLOCK_SIZE];
+	char out[FsConstants::BLOCK_SIZE];
 	int len;
 
 	if(1 != EVP_EncryptUpdate(crypto_layer::ctx,
 			reinterpret_cast<unsigned char*>(out),
 			&len,
 			reinterpret_cast<const unsigned char*>(in),
-			plainfs::BLOCK_SIZE)) ENCTRYPT_FAIL;
+			FsConstants::BLOCK_SIZE)) ENCTRYPT_FAIL;
 
 	if(1 != EVP_EncryptFinal_ex(crypto_layer::ctx,
 			reinterpret_cast<unsigned char*>(out + len),

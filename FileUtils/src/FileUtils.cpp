@@ -20,7 +20,7 @@ static unsigned char map_byte_to_char(unsigned char b)
 	}else if(b >= (unsigned char)'a' && b <= (unsigned char)'f'){
 		return (unsigned char) (b - 87);
 	} else {
-		throw; //should never happen unles there's error in implementation
+		throw; //should never happen unless there's error in implementation
 	}
 }
 
@@ -46,7 +46,7 @@ void FileUtils::name_to_hash(const unsigned char* filename, unsigned char* hash)
 
 bool FileUtils::compare_hashes(const unsigned char* h1, const unsigned char* h2)
 {
-	return memcmp(h1,h2, 32)==0;
+	return memcmp(h1, h2, 32) == 0;
 }
 
 
