@@ -3,7 +3,6 @@
 #include "YdClient/Auth.h"
 #include "YdClient/HttpAuthenticator.h"
 #include <curl/curl.h>
-#include <Configuration/Configuration.h>
 
 
 class YandexAuthenticator: public HttpAuthenticator
