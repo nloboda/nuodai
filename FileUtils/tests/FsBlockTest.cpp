@@ -26,7 +26,7 @@ private:
 
 	void fillChunkWithValue(unsigned char chunk_id, char value) {
 		char* data = this->sut->read_chunk(chunk_id);
-		for(int i = 0; i < this->sut->chunk_size(chunk_id); i++){
+		for(unsigned int i = 0; i < this->sut->chunk_size(chunk_id); i++){
 			data[i] = value;
 		}
 	}
@@ -92,8 +92,8 @@ void FsBlockTest::FsBlock_shouldMoveUpperChunks_ifLowerChunkSizeIsIncreased()
 	this->sut->insert_chunk(100);
 	this->sut->insert_chunk(100);
 
-	this->fillChunkWithValue(1, 66);
-	this->fillChunkWithValue(0, 77);
+	this->fillChunkWithValue(static_cast<unsigned int>(0), 66);
+	this->fillChunkWithValue(static_cast<unsigned int>(1), 77);
 
 	unsigned int offset_before = this->sut->get_chunk_offset(1);
 
@@ -101,11 +101,12 @@ void FsBlockTest::FsBlock_shouldMoveUpperChunks_ifLowerChunkSizeIsIncreased()
 
 	unsigned int chunk_after = this->sut->get_chunk_offset(1);
 	unsigned int size_diff = chunk_after - offset_before;
-	for(int i = 0; i < 100; i++)
-		CPPUNIT_ASSERT(this->sut->read_chunk(1)[i] == 66);
 
 	for(int i = 0; i < 100; i++)
-		CPPUNIT_ASSERT(this->sut->read_chunk(0)[i] == 77);
+		CPPUNIT_ASSERT(this->sut->read_chunk(0)[i] == 66);
+
+	for(int i = 0; i < 100; i++)
+		CPPUNIT_ASSERT(this->sut->read_chunk(1)[i] == 77);
 
 	CPPUNIT_ASSERT( size_diff == 50);
 }
