@@ -135,6 +135,7 @@ void PlainFs::write_plain(const char* buffer, char* block)
 	char* filename_buffer = plainfs_guts::filename_buffer + plainfs_guts::working_directory_lenth;
 	FileUtils::hash_to_name(reinterpret_cast<const unsigned char *>(block), reinterpret_cast<unsigned char *>(filename_buffer));
 
+	//TODO: this segfaults if plainfs_guts::filename_buffer is used
 	FILE* block_file = fopen(plainfs_guts::filename_buffer, "wb");
 	fwrite(buffer, FsConstants::BLOCK_SIZE, 1, block_file);
 	fclose(block_file);
