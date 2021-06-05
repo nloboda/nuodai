@@ -1,0 +1,12 @@
+out
+*.anjuta
+.anjuta_sym_db.db
+*~
+out
+nuodai.cbp
+nuodai.depend
+nuodai.layout
+.cproject
+.project
+.settings/
+
