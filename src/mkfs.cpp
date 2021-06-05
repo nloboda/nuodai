@@ -8,11 +8,28 @@
 #include <iostream>
 
 
+static void show_help() {
+	std::cout
+	<< "RTFM will follow " << std::endl
+	<< std::endl
+	<< "Usage: " << std::endl
+	<< "mkfs <configfilename> " << std::endl
+	<< "for example: mkfs config.bin " << std::endl;
+}
 
+static int check_args(int argc, char** argv) {
+
+}
 static int make(int argc, char** argv)
 {
+	if(argc!=1)
+	{
+		show_help();
+		return 1;
+	}
+
 	std::unique_ptr<Config> config = config_manager::make();
-	BlockMapper*  bm  = new BlockMapper();
+	BlockMapper* bm  = new BlockMapper();
 	PlainFs* pfs = new PlainFs(config->get_working_dir());
 	CryptoLayer* cl = new CryptoLayer(pfs, reinterpret_cast<const unsigned char*>(config->get_key()));
 	InodeManager* im = new InodeManager(bm, cl, config->get_iv());
@@ -21,6 +38,7 @@ static int make(int argc, char** argv)
 	im->suballocate(0, 1); //TODO: fixme this is dirty hack to make root dir have inode=1
 	Directory root_dir;
 	root_dir.mkdir("whatever", 2);
+	root_dir.mkdir("whatever_else", 3);
 	unsigned long root_inode =  im->suballocate(0, root_dir.size());
 	unsigned char* chunk = reinterpret_cast<unsigned char*>(im->read(root_inode));
 	directory::write_directory(&root_dir, chunk);
@@ -32,6 +50,8 @@ static int make(int argc, char** argv)
 	im->reset();
 	return 0;
 }
+
+
 
 static int sanity_check(int argc, char** argv)
 {
