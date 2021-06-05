@@ -5,7 +5,7 @@
  *      Author: user
  */
 
-#include <FileSystem/Directory.h>
+#include "FileSystem/Directory.h"
 #include <memory>
 #include <stdexcept>
 #include <cstring>
@@ -55,7 +55,7 @@ Directory::Directory(): children(std::vector<Dirchild>{})
 
 };
 
-void Directory::mkdir(const char* name, 	unsigned long inode)
+void Directory::mkdir(const char* name, unsigned long inode)
 {
 	Dirchild dc;
 	std::strcpy(dc.name, name);
