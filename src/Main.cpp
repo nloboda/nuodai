@@ -37,7 +37,7 @@ static int mkfs(std::string config_filename)
 	InodeManager* im = new InodeManager(bm, cl, config->get_iv());
 	im->new_fat();
 	im->save();
-	im->suballocate(0, 1); //TODO: fixme this is dirty hat to make root dir have inode=1
+	im->suballocate(0, 1); //TODO: fixme this is dirty hack to make root dir have inode=1
 	Directory root_dir;
 	root_dir.mkdir("whatever", 2);
 	unsigned long root_inode =  im->suballocate(0, root_dir.size());
