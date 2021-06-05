@@ -1,5 +1,5 @@
 CXX = g++
-CFLAGS = -g -Wall 
+CFLAGS = -g -Wall -D_FILE_OFFSET_BITS=64
 PROD_DEPS = `pkg-config --cflags --libs libcurl openssl fuse3 jsoncpp`
 TEST_DEPS = `pkg-config --cflags --libs cppunit`
 .DEFAULT_GOAL := make

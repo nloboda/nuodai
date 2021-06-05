@@ -12,9 +12,9 @@
 #include "string.h"
 #define FUSE_USE_VERSION 31
 
-#include <fuse.h>
-#include <fuse_common.h>
-#include <fuse_lowlevel.h>
+#include <fuse3/fuse.h>
+#include <fuse3/fuse_common.h>
+#include <fuse3/fuse_lowlevel.h>
 #include <stdio.h>
 #include <stdlib.h>
 

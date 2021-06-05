@@ -9,8 +9,8 @@
 #define FUSE_H_FUSE_FUSECLIHANDLER_H_
 #define FUSE_USE_VERSION 31
 
-#include <fuse.h>
-#include <fuse_lowlevel.h>
+#include <fuse3/fuse.h>
+#include <fuse3/fuse_lowlevel.h>
 
 class FuseCLIHandler
 {

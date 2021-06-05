@@ -5,8 +5,8 @@
 #include <iostream>
 #include <cstring>
 #include <string.h>
-#include <json/value.h>
-#include <json/json.h>
+#include <jsoncpp/json/value.h>
+#include <jsoncpp/json/json.h>
 #include <stdexcept>
 #include <memory>
 #include "FileUtils/FsConstants.h"
