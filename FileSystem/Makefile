@@ -13,5 +13,9 @@ make:  Directory.o
 test: make
 	echo "nothing to do"
 
+test: make
+	$(CXX) $(CFLAGS) -o Tests  *.o tests/Suite.cpp -I./tests/ -I./h $(PROD_DEPS) $(TEST_DEPS)
+	./Tests
+
 clean:
 	rm -Rf *.o

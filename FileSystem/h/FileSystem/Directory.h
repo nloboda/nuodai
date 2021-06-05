@@ -1,45 +1,52 @@
 /*
  * Directory.h
  *
- *  Created on: 22 Oct,2019
+ *  Created on: 23 Dec,2019
  *      Author: user
  */
 
-#ifndef FILEUTILS_H_FILEUTILS_DIRECTORY_H_
-#define FILEUTILS_H_FILEUTILS_DIRECTORY_H_
+#ifndef FILESYSTEM_H_FILESYSTEM_DIRECTORY_H_
+#define FILESYSTEM_H_FILESYSTEM_DIRECTORY_H_
 
+#include <vector>
+#include <memory>
+#include "FileSystem/InodeTypes.h"
 
-#include "FileSystem/AllocationTable.h"
-/**
- * This is Directory. it contains a list of entities (files or directories)
- * TODO: size for now is fixed. we need to ad support for dir blob: additional blobs with data
- * if directory size is greater then chunk
- *
- * Directory is entity. And it supposed to be stored in allocation table.
- * Here are the bytes:
- * 0: number of children
- * 1 - 16165: 61 slot for children (named references)
- * 16165 - 16173 - unsigned long points to continuation (not implemented!!! not implemented!!!)
- *
- *
- */
+struct Dirchild {
+	char name[256];
+	filesystem::InodeType type;
+	unsigned long inode;
+};
+
 class Directory
 {
 public:
-	Directory(const char* data);
-	virtual ~Directory();
-	const unsigned char count_children();
-	const char* get_name(unsigned char i);
-	const EntityType get_type(unsigned char i);
-	const unsigned long inode_id(unsigned char i);
-
+	Directory();
+	~Directory();
+	void mkdir(const char* name, unsigned long inode);
+	void unlink(const char* name);
+	unsigned int count_children();
+	unsigned long get_inode_by_name(const char* name);
+	unsigned int size();
+	const Dirchild get_child(unsigned int index);
 private:
-	const char* data;
-	//size is name(256 bytes) + entity type (byte) + inode_id (64 bits aka 8 bytes)
-	static unsigned const int STRUCTURE_SIZE = 265;
-	const char* const child_at(unsigned char position);
+	std::vector<Dirchild> children;
 };
 
 
+namespace directory
+{
+/**
+ * directory format:
+ * [char: magic byte] [char: size]
+ * for i<size:
+ * [char{256}: name] [64 bits long: inode]w
+ */
+	std::unique_ptr<Directory> read_directory(const unsigned char* data);
+	void write_directory(Directory* dir, unsigned char* out);
 
-#endif /* FILEUTILS_H_FILEUTILS_DIRECTORY_H_ */
+}
+
+
+
+#endif /* FILESYSTEM_H_FILESYSTEM_DIRECTORY_H_ */
