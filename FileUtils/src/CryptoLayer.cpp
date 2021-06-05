@@ -39,7 +39,6 @@ CryptoLayer::~CryptoLayer()
 void CryptoLayer::read_decrypted(const char* block, char* out, const char* iv)
 {
 	EVP_CIPHER_CTX_reset(crypto_layer::ctx);
-
 	if(1 != EVP_DecryptInit_ex(crypto_layer::ctx,
 			EVP_aes_256_cbc(),
 			nullptr,
