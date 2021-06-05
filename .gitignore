@@ -14,3 +14,4 @@ mkfs
 mount
 Tests
 config.bin
+build
